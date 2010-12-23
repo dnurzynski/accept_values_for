@@ -22,7 +22,7 @@ if defined?(ActiveRecord)
   def accept_values_for(attribute, *values)
     AcceptValuesFor.new(attribute, *values)
   end
-  
+
 end
 
 class AcceptValuesFor  #:nodoc:
@@ -38,9 +38,9 @@ class AcceptValuesFor  #:nodoc:
     @values.each do |value|
       model.send("#{@attribute}=", value)
       model.valid?
-      if model.errors.on(@attribute)
+      unless model.errors[@attribute].empty?
         @failed_value = value
-        return false 
+        return false
       end
     end
     return true
@@ -52,24 +52,24 @@ class AcceptValuesFor  #:nodoc:
     @values.each do |value|
       model.send("#{@attribute}=", value)
       model.valid?
-      unless model.errors.on(@attribute)
+      if model.errors[@attribute].empty?
         @failed_value = value
-        return false 
+        return false
       end
     end
     return true
   end
 
   def failure_message_for_should
-    result = "expected #{@model.inspect} to accept value #{@failed_value.inspect} for #{@attribute.inspect}, but it was not\n" 
-    if @model.respond_to?(:errors) && ActiveRecord::Errors === @model.errors 
-      result += "Errors: " + Array(@model.errors.on(@attribute)).join(", ")
+    result = "expected #{@model.inspect} to accept value #{@failed_value.inspect} for #{@attribute.inspect}, but it was not\n"
+    if @model.respond_to?(:errors) && ActiveModel::Errors === @model.errors
+      result += "Errors: " + @model.errors[@attribute].join(", ")
     end
     result
   end
 
   def failure_message_for_should_not
-    "expected #{@model.inspect} to not accept value #{@failed_value.inspect} for #{@attribute.inspect} attribute, but was" 
+    "expected #{@model.inspect} to not accept value #{@failed_value.inspect} for #{@attribute.inspect} attribute, but was"
   end
 
   def description

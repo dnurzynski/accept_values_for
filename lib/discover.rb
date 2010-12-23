@@ -16,8 +16,8 @@ if defined?(ActiveRecord)
   # == Examples
   #
   #   class Group < AR::Base
-  #     named_scope :approved, :conditions => "approved = true"
-  #     named_scope :order_by_name, :order => "name"
+  #     scope :approved, :conditions => "approved = true"
+  #     scope :order_by_name, :order => "name"
   #   end
   #
   #   Group.approved.should discover(Group.create!(:approved => true))
